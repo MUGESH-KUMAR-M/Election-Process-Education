@@ -5,11 +5,13 @@ import Timeline from './components/Timeline';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
 import { motion, AnimatePresence } from 'framer-motion';
+import './config/firebase'; // Initialize Firebase/Google Cloud Services
 
 // Lazy load heavy components
 const AIAssistant = lazy(() => import('./components/AIAssistant'));
 const EducationalContent = lazy(() => import('./components/EducationalContent'));
 const Quiz = lazy(() => import('./components/Quiz'));
+const FindCenter = lazy(() => import('./components/FindCenter'));
 
 function App() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -80,6 +82,12 @@ function App() {
           {activeTab === 'quiz' && (
             <Suspense fallback={<div className="text-center py-20">Loading Quiz...</div>}>
               <Quiz />
+            </Suspense>
+          )}
+
+          {activeTab === 'centers' && (
+            <Suspense fallback={<div className="text-center py-20">Loading Map...</div>}>
+              <FindCenter />
             </Suspense>
           )}
         </AnimatePresence>

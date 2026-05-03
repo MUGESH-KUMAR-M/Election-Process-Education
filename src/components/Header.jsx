@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Vote, Info, MessageSquare, GraduationCap, CheckCircle2, Menu, X, Zap } from 'lucide-react';
+import PropTypes from 'prop-types';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Vote, Info, MessageSquare, GraduationCap, CheckCircle2, Menu, X, Zap, MapPin } from 'lucide-react';
 
 const Header = ({ activeTab, setActiveTab }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -9,6 +11,7 @@ const Header = ({ activeTab, setActiveTab }) => {
     { id: 'education', label: 'Learn', icon: <Info size={18} />, description: 'Educational Guide' },
     { id: 'assistant', label: 'AI Help', icon: <MessageSquare size={18} />, description: 'Ask Questions' },
     { id: 'quiz', label: 'Test', icon: <GraduationCap size={18} />, description: 'Knowledge Quiz' },
+    { id: 'centers', label: 'Centers', icon: <MapPin size={18} />, description: 'Google Maps' },
   ];
 
   return (
@@ -20,6 +23,7 @@ const Header = ({ activeTab, setActiveTab }) => {
           onClick={() => setActiveTab('overview')}
           role="button"
           tabIndex={0}
+          onKeyDown={(e) => e.key === 'Enter' && setActiveTab('overview')}
           aria-label="Go to homepage"
         >
           <div className="relative p-2.5 bg-primary/15 rounded-xl group-hover:bg-primary/25 transition-all duration-300 group-hover:scale-105">
@@ -48,7 +52,11 @@ const Header = ({ activeTab, setActiveTab }) => {
               }`}
             >
               {activeTab === item.id && (
-                <span className="absolute inset-0 bg-primary rounded-xl shadow-lg shadow-primary/25 animate-fade-in-scale" />
+                <motion.span 
+                  layoutId="nav-pill"
+                  className="absolute inset-0 bg-primary rounded-xl shadow-lg shadow-primary/25" 
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                />
               )}
               <span className="relative z-10">{item.icon}</span>
               <span className="relative z-10 font-semibold text-sm">{item.label}</span>
@@ -57,22 +65,18 @@ const Header = ({ activeTab, setActiveTab }) => {
         </nav>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-3">
-          <button 
-            className="btn btn-primary btn-sm hidden sm:flex items-center gap-2 shadow-glow animate-pulse-glow" 
-            onClick={() => setActiveTab('education')}
-          >
-            <Zap size={14} />
-            <span>Start Learning</span>
+        <div className="flex items-center gap-4">
+          <div id="google_translate_element" className="hidden sm:block"></div>
+          <button className="btn btn-primary hidden sm:flex" onClick={() => setActiveTab('education')}>
+            <Zap size={16} />
+            Start Learning
           </button>
-          
           <button
-            className="lg:hidden p-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-200 active:scale-95"
+            className="lg:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle mobile menu"
-            aria-expanded={mobileMenuOpen}
           >
-            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
@@ -120,6 +124,11 @@ const Header = ({ activeTab, setActiveTab }) => {
       )}
     </header>
   );
+};
+
+Header.propTypes = {
+  activeTab: PropTypes.string.isRequired,
+  setActiveTab: PropTypes.func.isRequired,
 };
 
 export default Header;
