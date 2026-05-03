@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, XCircle, RefreshCcw, Trophy } from 'lucide-react';
 import { quizQuestions as questions } from '../data/quizData';
@@ -123,4 +123,4 @@ const Quiz = () => {
   );
 };
 
-export default Quiz;
+export default memo(Quiz);

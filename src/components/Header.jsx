@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import PropTypes from 'prop-types';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Vote, Info, MessageSquare, GraduationCap, CheckCircle2, Menu, X, Zap, MapPin } from 'lucide-react';
+import { Vote, Info, MessageSquare, GraduationCap, CheckCircle2, Menu, X, Zap, MapPin, User } from 'lucide-react';
 
 const Header = ({ activeTab, setActiveTab }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -65,12 +65,23 @@ const Header = ({ activeTab, setActiveTab }) => {
         </nav>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-4">
-          <div id="google_translate_element" className="hidden sm:block"></div>
-          <button className="btn btn-primary hidden sm:flex" onClick={() => setActiveTab('education')}>
+        <div className="flex items-center gap-3">
+          <div id="google_translate_element" className="hidden xl:block"></div>
+          
+          <div className="g_id_signin hidden sm:block"
+               data-type="standard"
+               data-shape="pill"
+               data-theme="filled_blue"
+               data-text="signin_with"
+               data-size="medium"
+               data-logo_alignment="left">
+          </div>
+
+          <button className="btn btn-primary hidden md:flex items-center gap-2" onClick={() => setActiveTab('education')}>
             <Zap size={16} />
-            Start Learning
+            <span className="hidden xl:inline">Start Learning</span>
           </button>
+
           <button
             className="lg:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -82,46 +93,55 @@ const Header = ({ activeTab, setActiveTab }) => {
       </div>
       
       {/* Mobile Navigation Menu */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 right-0 glass border-b border-white/[0.08] overflow-hidden animate-fade-in">
-          <nav className="container py-4" aria-label="Mobile Navigation">
-            <div className="flex flex-col gap-1">
-              {navItems.map((item, index) => (
-                <button
-                  key={item.id}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div 
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="lg:hidden absolute top-full left-0 right-0 glass border-b border-white/[0.08] overflow-hidden"
+          >
+            <nav className="container py-4" aria-label="Mobile Navigation">
+              <div className="flex flex-col gap-1">
+                {navItems.map((item, index) => (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      setActiveTab(item.id);
+                      setMobileMenuOpen(false);
+                    }}
+                    aria-current={activeTab === item.id ? 'page' : undefined}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 focus-ring ${
+                      activeTab === item.id 
+                        ? 'bg-primary text-white shadow-lg shadow-primary/25' 
+                        : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    {item.icon}
+                    <div className="flex flex-col items-start">
+                      <span className="font-semibold text-sm">{item.label}</span>
+                      <span className="text-xs opacity-70">{item.description}</span>
+                    </div>
+                  </button>
+                ))}
+                
+                <div className="g_id_signin mt-4 w-full" data-type="standard" data-width="100%"></div>
+
+                <button 
+                  className="btn btn-primary mt-3 w-full"
                   onClick={() => {
-                    setActiveTab(item.id);
+                    setActiveTab('education');
                     setMobileMenuOpen(false);
                   }}
-                  aria-current={activeTab === item.id ? 'page' : undefined}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 focus-ring ${
-                    activeTab === item.id 
-                      ? 'bg-primary text-white shadow-lg shadow-primary/25' 
-                      : 'text-slate-400 hover:text-white hover:bg-white/5'
-                  }`}
-                  style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  {item.icon}
-                  <div className="flex flex-col items-start">
-                    <span className="font-semibold text-sm">{item.label}</span>
-                    <span className="text-xs opacity-70">{item.description}</span>
-                  </div>
+                  <Zap size={16} />
+                  Start Learning
                 </button>
-              ))}
-              <button 
-                className="btn btn-primary mt-3 w-full"
-                onClick={() => {
-                  setActiveTab('education');
-                  setMobileMenuOpen(false);
-                }}
-              >
-                <Zap size={16} />
-                Start Learning
-              </button>
-            </div>
-          </nav>
-        </div>
-      )}
+              </div>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
@@ -131,4 +151,4 @@ Header.propTypes = {
   setActiveTab: PropTypes.func.isRequired,
 };
 
-export default Header;
+export default memo(Header);

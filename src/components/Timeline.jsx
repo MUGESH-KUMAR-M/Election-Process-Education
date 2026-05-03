@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { motion } from 'framer-motion';
 import { UserPlus, FileText, Megaphone, CheckSquare, BarChart3, Trophy } from 'lucide-react';
 
@@ -115,4 +115,4 @@ const Timeline = () => {
   );
 };
 
-export default Timeline;
+export default memo(Timeline);
